@@ -35,12 +35,12 @@ class RemoteBloc {
           channel: state.channel,
         );
       } else if (event is NextChannelEvent) {
-        state = state = RemoteState(
+        state = RemoteState(
           volume: state.volume,
           channel: state.channel + event.next,
         );
       } else if (event is PreviousChannelEvent) {
-        state = state = RemoteState(
+        state = RemoteState(
           volume: state.volume,
           channel: state.channel - event.previous,
         );
