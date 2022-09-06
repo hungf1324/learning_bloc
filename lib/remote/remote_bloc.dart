@@ -1,13 +1,35 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'remote_event.dart';
 import 'remote_state.dart';
+
+const String KEY_CURRENT_CHANNEL = 'current_channel';
+const String KEY_CURRENT_VOLUME = 'current_volume';
 
 class RemoteBloc {
   var state = RemoteState(
     volume: 70,
     channel: 2,
   ); // init giá trị khởi tạo của RemoteState. Giả sử TV ban đầu có âm lượng 70
+
+  loadState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    state.channel = (prefs.getInt(KEY_CURRENT_CHANNEL) ?? 1);
+    state.volume = (prefs.getInt(KEY_CURRENT_VOLUME) ?? 70);
+
+    stateController.sink.add(state);
+  }
+
+  saveState(RemoteState state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setInt(KEY_CURRENT_CHANNEL, state.channel);
+    prefs.setInt(KEY_CURRENT_VOLUME, state.volume);
+  }
 
   // tạo 2 controller
   // 1 cái quản lý event, đảm nhận nhiệm vụ nhận event từ UI
@@ -48,6 +70,8 @@ class RemoteBloc {
         // xử lý mute
         state = RemoteState(volume: 0, channel: state.channel);
       }
+
+      saveState(state);
 
       // add state mới vào stateController để bên UI nhận được
       stateController.sink.add(state);

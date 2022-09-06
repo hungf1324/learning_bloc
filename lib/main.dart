@@ -38,6 +38,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final bloc = RemoteBloc(); // khởi tạo bloc  <=== new
 
   @override
+  void initState() {
+    setState(() {
+      bloc.loadState();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
